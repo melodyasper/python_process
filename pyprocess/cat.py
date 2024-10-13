@@ -16,37 +16,31 @@ class Cat(Process[Event, Command, State]):
         pass
 
     class Asleep(State):
-        def __init__(self) -> None:
-            logger.info("I am asleep now")
-            time.sleep(0.5)
+        pass
 
     class Awake(State):
-        def __init__(self) -> None:
-            logger.info("I am awake now")
-            time.sleep(0.5)
+        pass
 
     class Meowing(State):
-        def __init__(self) -> None:
-            logger.info("meow")
-            time.sleep(0.5)
-        
-    class BeginMeowing(Event):
         pass
-    
+
+    class BeginMeowing(Event):
+        def __init__(self) -> None:
+            logger.info("Meowing")
+            time.sleep(0.5)
+
     class Meow(Command):
         pass
 
     class GoingToSleep(Event):
-        pass
+        def __init__(self) -> None:
+            logger.info("Going to sleep")
+            time.sleep(0.5)
 
     class WakingUp(Event):
-        pass
-
-    class Idle(State):
-        pass
-
-    class Idling(Event):
-        pass
+        def __init__(self) -> None:
+            logger.info("Waking Up")
+            time.sleep(0.5)
 
     @classmethod
     def initial_state(cls) -> State:
@@ -66,7 +60,9 @@ class Cat(Process[Event, Command, State]):
             case (cls.Meow(), cls.Awake()):
                 return [cls.BeginMeowing()]
             case _:
-                logger.warning(f"Irrefutable case hit in decicde() for {command=} {state=}")
+                logger.warning(
+                    f"Irrefutable case hit in decicde() for {command=} {state=}"
+                )
                 return []
 
     @classmethod
@@ -79,9 +75,11 @@ class Cat(Process[Event, Command, State]):
             case (cls.Awake(), cls.BeginMeowing()):
                 return cls.Meowing()
             case _:
-                logger.warning(f"Irrefutable case hit in evolve() for {state=} {event=}")
+                logger.warning(
+                    f"Irrefutable case hit in evolve() for {state=} {event=}"
+                )
                 return state
-    
+
     @classmethod
     def react(cls, state: State, event: Event) -> Sequence[Command]:
         match (state, event):
@@ -100,6 +98,8 @@ class Cat(Process[Event, Command, State]):
             case cls.Asleep():
                 return [cls.WakeUp()]
             case cls.Awake():
+                return [cls.Meow()]
+            case cls.Meowing():
                 return [cls.Sleep()]
             case _:
                 return []
