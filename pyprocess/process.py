@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Iterable, TypeVar
+from typing import Generic, Sequence, TypeVar
 
 E = TypeVar("E")
 C = TypeVar("C")
@@ -18,13 +18,13 @@ class Process(ABC, Generic[E, C, S]):
             event: Event
 
         Returns
-            An iterable set of commands to act on.
+            An sequence of commands to act on.
         """
         pass
 
     @classmethod
     @abstractmethod
-    def resume(cls, state: S) -> Iterable[C]:
+    def resume(cls, state: S) -> Sequence[C]:
         """Resume to the next command from a starting state.
 
         Parameters
@@ -37,7 +37,7 @@ class Process(ABC, Generic[E, C, S]):
 
     @classmethod
     @abstractmethod
-    def react(cls, state: S, event: E) -> Iterable[C]:
+    def react(cls, state: S, event: E) -> Sequence[C]:
         """React to an event by generating new commands.
 
         Parameters
@@ -45,7 +45,7 @@ class Process(ABC, Generic[E, C, S]):
             event: Event being reacted to
 
         Returns
-            An iterable set of commands to act on.
+            A sequence of commands to act on.
         """
         pass
 
@@ -74,7 +74,7 @@ class Process(ABC, Generic[E, C, S]):
 
     @classmethod
     @abstractmethod
-    def decide(cls, command: C, state: S) -> Iterable[E]:
+    def decide(cls, command: C, state: S) -> Sequence[E]:
         """React to an event by generating new commands.
 
         Parameters
@@ -82,6 +82,6 @@ class Process(ABC, Generic[E, C, S]):
             state: State of the current process
 
         Returns
-            An iterable set of events to evolve the state on.
+            A sequence of events to evolve the state on.
         """
         pass
